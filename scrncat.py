@@ -23,7 +23,8 @@ import re
 
 _STAGES_CMDS = {}
 _STAGES = {}
-_YAML = "./c2.yaml"
+C2_YAML = "./c2.yaml"
+_BIN_EXTENSIONS = (".exe", ".py", ".ps1", "bat", ".dll", ".mof", ".js", ".vbs", ".wsf", ".hta", ".xml", ".csproj", ".proj", ".xsl", ".sct", ".xoml")
 
 _COMMON_PASSWORDS_REGEX = ["^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$", 
 		"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$",
@@ -86,7 +87,7 @@ def redactAndSave(results, _img, _sPath, _sFName, _passwords, _outputDir):
 
 def redactScreenshot(_screenshotPath, _screenshotTFPath, _sPath, sFName, _passwords, _outputDir):
 
-	print(" [.]: Redacting Screenshot %s ..." %(_screenshotPath))
+	print(" [.]: Redacting Screenshot '%s'..." %(_screenshotPath))
 
 	try:
 		with Image(filename=_screenshotPath) as screenshot:
@@ -114,7 +115,7 @@ def init(_screenshotsPath, _outputDir, _grouped):
 	print("[+]: Initializing ...")
 	archive(_screenshotsPath)
 
-	with open('./cobaltstrike.yaml') as _configFile:
+	with open(C2_YAML) as _configFile:
 		_config = yaml.full_load(_configFile)
 
 	if not os.path.exists(_outputDir):
@@ -142,9 +143,6 @@ def init(_screenshotsPath, _outputDir, _grouped):
 
 
 def _maxScoreStages(scores):
-	for key, value in scores.items():
-		if key != "Local System Reconnaissance":
-			scores[key] += 1
 
 	_max_score_stages = []
 	for key, value in scores.items():
@@ -174,21 +172,17 @@ def groupStuff(_screenshotPath, _imgText, _outputDir, _ctTime, _stages, _stages_
 	    for stage in _stages_cmds:
 	    	for cmd in _stages_cmds[stage]:
 	    		for _csCmdItem in _csCmds:
-		    		if cmd.lower() in _csCmdItem:
-		    			
-		    			_isHostname = False
-		    			
-		    			if re.search(r"[A-Za-z0-9]+\.+[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]\.+[A-Za-z]+", _csCmdItem, re.IGNORECASE):
-		    				_hostnames = re.findall(r"[A-Za-z0-9]+\.+[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]\.+[A-Za-z]+", _csCmdItem)
-			    			if(cmd.lower() in _hostnames[0]):
-			    				_isHostname = True
 
-			    		if _isHostname == False:
-			    			_stages[stage] += 1
-			    			if stage not in _TempStages:
-			    				_TempStages[stage] = cmd
-			    			else:
-			    				_TempStages[stage] = _TempStages[stage] + "_" + cmd
+	    			_commandArg = cmd.lower()
+	    			if cmd.lower().endswith(_BIN_EXTENSIONS):
+	    				_commandArg = cmd.lower() + " "
+
+		    		if _commandArg in _csCmdItem:
+		    			_stages[stage] += 1
+		    			if stage not in _TempStages:
+		    				_TempStages[stage] = cmd
+		    			else:
+		    				_TempStages[stage] = _TempStages[stage] + "_" + cmd
 
 	    # couldn't confirm which stage/phase is it, rename then move to the Miscellaneous folder.
 	    if(len(_maxScoreStages(_stages)) > 2):
@@ -210,11 +204,12 @@ def groupStuff(_screenshotPath, _imgText, _outputDir, _ctTime, _stages, _stages_
 	    	logging.debug("\t[debug]: Renaming and copying screenshot '%s' to '%s'" %( _screenshotPath, _dstScreenshotName))
 	    	shutil.copy(_screenshotPath, _dstScreenshotName)
 	    	_processed = os.path.abspath(_dstScreenshotName)
-		#print("[+]: Grouping screenshots done.")
+		
 	    for stage in _stages_cmds:
 	    	_stages[stage] = 0
 
 	    return _processed
+
     except:
         print ("[!]: Error grouping & renaming screenshot '%s'" %(_screenshotPath))
         return ""
@@ -222,7 +217,7 @@ def groupStuff(_screenshotPath, _imgText, _outputDir, _ctTime, _stages, _stages_
 
 def processScreenshot(_screenshotPath, _screenshotTFPath, _ctTime, _outputDir, _stages, _stages_cmds, _prefix):
 
-	print(" [.]: Processing Screenshot %s ..." %(_screenshotPath))
+	print(" [.]: Processing Screenshot '%s'..." %(_screenshotPath))
 
 	try:
 		#transform the screenshot for better text extraction accuracy
@@ -240,6 +235,7 @@ def processScreenshot(_screenshotPath, _screenshotTFPath, _ctTime, _outputDir, _
 		_processed = groupStuff(_screenshotPath, _imgText, _outputDir, _ctTime, _stages, _stages_cmds, _prefix)
 
 		return _processed
+	
 	except:
 		print("[!]: Error processing screenshot '%s'" %(_screenshotPath))
 		exit(0)
@@ -247,12 +243,12 @@ def processScreenshot(_screenshotPath, _screenshotTFPath, _ctTime, _outputDir, _
 
 def archive(_screenshotsPath):
 
-	print("[+]: Archiving folder %s ..." %(_screenshotsPath))
-
 	try:
 		if os.path.exists(_screenshotsPath):
 			_ts = calendar.timegm(time.gmtime())
 			outZipFile = zipfile.ZipFile("archive-"+str(_ts)+".zip", 'w', zipfile.ZIP_DEFLATED)
+
+			print("[+]: Archiving folder '%s' to '%s' ..." %(_screenshotsPath, "archive-"+str(_ts)+".zip"))
 
 			rootdir = os.path.basename(_screenshotsPath)
 
@@ -298,6 +294,7 @@ def main(args):
 	_processed = []
 
 	if args.group:
+		print("[+]: Start grouping/renaming screenshots...")
 		for _screenshot in os.listdir(_imgsPath):
 			if _screenshot.endswith(".png") or _screenshot.endswith(".jpg") or _screenshot.endswith(".jpeg"): 
 				_screenshotFPath = os.path.join(_imgsPath, _screenshot)
@@ -311,8 +308,12 @@ def main(args):
 			for processedScreenshot in executor.map(PSWorker, _poolArgs):
 				_processed.append(processedScreenshot)
 
+		print("[+]: Grouping/Renaming done.")
+
 
 	if args.redact:
+
+		print("[+]: Start redacting screenshots...")
 
 		_passwords = []
 		_poolArgs = []
@@ -350,6 +351,8 @@ def main(args):
 		with concurrent.futures.ProcessPoolExecutor(max_workers=args.threads) as executor:
 			for _ in executor.map(RDWorker, _poolArgs):
 				pass
+
+		print("[+]: Redacting done.")
 
 	print("[+]: Finished")
 
