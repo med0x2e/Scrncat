@@ -279,15 +279,6 @@ def PSWorker(_args):
 def RDWorker(_args):
 	return redactScreenshot(_args[0],_args[1],_args[2], _args[3], _args[4], _args[5])
 
-def showExamples():
-	print(
-	' \n Examples:\n\t- Rename Screenshots (<REDACTED-SCREENSHOT-DATETIME.png>) and Redact passwords (default regex "_COMMON_PASSWORDS_REGEX"): \n\t\t>python3 scrncat.py -p /home/user/Screenshots/ -o generated-screenshots --redact' +
-	'\n\n\t- Rename Screenshots (<REDACTED-SCREENSHOT-DATETIME.png>) Redact passwords based on a dictionary of known passwords: \n\t\t>python3 scrncat.py -p /home/user/Screenshots/ -o generated-screenshots --redact -pw cracked-passwords.txt' +
-	'\n\n\t- Group Screenshots into phases listed in "c2.yaml", this will also rename screenshots to <SCREENSHOT-DATETIME-EXECUTED-COMMAND.png> and place it in the appropriate sub-folder (Persistence, LT ..etc): \n\t\t>python3 scrncat.py -p /home/user/Screenshots/ -o generated-screenshots --group' +
-	'\n\n\t- Group Screenshots into phases listed in "c2.yaml" & rename to <SCREENSHOT-DATETIME-EXECUTED-COMMAND.png> & move to appropriate sub-folder (Persistence, LT ..etc) & Depends on "beacon>" prefix for accurate command extraction: \n\t\t>python3 scrncat.py -p /home/user/Screenshots/ -o generated-screenshots --group --prefix "beacon>" ' +
-	'\n\n\t- Group and Redact .... all the above: \n\t\t>python3 scrncat.py -p /home/user/Screenshots/ -o generated-screenshots --group --redact --prefix "beacon>" \n\n')
-
-
 
 def main(args):
 
