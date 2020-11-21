@@ -2,9 +2,10 @@
 A script using OCR (pytesseract) and PIL to process screenshots and rename/redact passwords based on common password patterns (Regex) or a password list of choice and/or group Screenshots based on which RT/PT stage executed commands correspond to.
 
 # Features
-* Redact screenshots (--redact switche)
+* Redact screenshots (--redact switch) based on commond password patterns (regex) or a password list.
 * Rename screenshots to <DATE_SCREENSHOT_WAS_TAKEN_COMMAND_EXECUTE.png> (based on command extracted when using --group switch)
 * Group screenshots into PT/RT stages directory structure (Persistence, Recon, Lateral Movement, PrivEsc ..etc) based on c2.yaml config file structure/commands
+* Command extraction based on a prefix of choice (--prefix)
 * Multi-threaded
 
 # Usage
