@@ -1,8 +1,8 @@
 ## Scrncat
-A script i created to help with RT/PT reporting by grouping, organizing and redacting passwords/hashes in screenshots taken during long-term PT/RT engagements (> 1 month), it mainly uses OCR (pytesseract) and PIL to process screenshots and rename/redact passwords based on common password patterns (Regex) or a password list of choice and/or group Screenshots based on which RT/PT stage executed commands correspond to.
+A script i created to help with RT/PT reporting by grouping, organizing and redacting passwords/hashes in screenshots taken during long-term PT/RT engagements (> 1 month), it mainly uses OCR (pytesseract) and PIL to process screenshots and redact passwords based on common password patterns (Regex) or a password list of choice and/or rename/group Screenshots based on which RT/PT stage executed commands correspond to.
 
 ## Features
-* Redact screenshots (--redact switch) based on commond password patterns (regex) or a password list.
+* Redact passwords/hashes (--redact switch) based on commond password patterns (regex) or a password list.
 * Rename screenshots to <DATE_SCREENSHOT_WAS_TAKEN_COMMAND_EXECUTE.png> (based on command extracted when using --group switch)
 * Group screenshots into PT/RT stages directory structure (Persistence, Recon, Lateral Movement, PrivEsc ..etc) based on c2.yaml config file structure/commands
 * Command extraction based on a prefix of choice (--prefix)
@@ -46,11 +46,12 @@ A script i created to help with RT/PT reporting by grouping, organizing and reda
 		
 ## TODO:
 This was an experimental attempt to automate few boring tasks when doing reporting, feel free to contribute/improve
-* Yaml files for other C2 frameworks & adding commands for other c2 frameworks 
+* Support for other other C2 frameworks (yaml files for other c2 frameworks commands)
 * Adding PDF/Word support (reports)
 * Tweaking pytesseract arguments and PIL image resize to improve accuracy (dynamic resizing based on image width/height ..etc.)
 
 ## Current Known Issues
-* sequence of commands; for example Lateral Movement "make_token" and "ls" commands sequence are considered as local system recon, should be LT instead.
-* few persistence and local system recon commands are grouped as Misc.
-* Accuracy to be improved
+* So far tested only for screenshots taken for the "cobaltstrike" CLI with almost 80% success rate, Pytesseract text recongnition is not always 100% accurate for screenshots with higher dimensions (ex: 'l' recognized as '1' and vice-versa), may be cv2 'threshold' would help (need some tweaking and testing).
+* Sequence of commands; for example Lateral Movement "make_token" and "ls" commands sequence are considered as local system recon, should be LT instead.
+* Few persistence and local system recon commands are grouped as Misc.
+
