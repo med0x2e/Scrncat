@@ -45,7 +45,7 @@ A script i created to help with RT/PT reporting by grouping, organizing and reda
 		`>python3 scrncat.py -p /home/user/Screenshots/ -o generated-screenshots --group --redact --prefix "beacon>"`
 		
 ## TODO:
-This was an experimental attempt to automate few boring tasks when doing reporting, feel free to contribute/improve
+This was an experimental attempt to automate few boring tasks when doing reporting, feel free to improve it for better results.
 * Support for other other C2 frameworks (yaml files for other c2 frameworks commands)
 * Adding PDF/Word support (reports)
 * Tweaking pytesseract arguments and PIL image resize to improve accuracy (dynamic resizing based on image width/height ..etc.)
