@@ -51,7 +51,7 @@ This was an experimental attempt to automate few boring tasks when doing reporti
 * Tweaking pytesseract arguments and PIL image resize to improve accuracy (dynamic resizing based on image width/height ..etc.)
 
 ## Current Known Issues
-* So far tested only for screenshots taken for the "cobaltstrike" CLI with almost 80% success rate, Pytesseract text recongnition is not always 100% accurate for screenshots with higher dimensions (ex: 'l' recognized as '1' and vice-versa), may be cv2 'threshold' would help (need some tweaking and testing).
+* So far tested only for screenshots taken for the "cobaltstrike" CLI with almost 80% success rate, Pytesseract text recognition is not always 100% accurate for screenshots with higher dimensions (ex: 'l' recognized as '1' and vice-versa), may be cv2 'threshold' would help (need some tweaking and testing).
 * Sequence of commands; for example Lateral Movement "make_token" and "ls" commands sequence are considered as local system recon, should be LT instead.
 * Few persistence and local system recon commands are grouped as Misc.
 
