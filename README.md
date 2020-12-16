@@ -1,5 +1,5 @@
 ## Scrncat
-A script i created to help with RT/PT reporting by grouping, organizing and redacting passwords/hashes in screenshots taken during long-term PT/RT engagements (> 1 month), it mainly uses OCR (pytesseract) and PIL to process screenshots and redact passwords based on common password patterns (Regex) or a password list of choice and/or rename/group Screenshots based on which RT/PT stage executed commands correspond to.
+A experimental script i created to help with RT/PT reporting by grouping, organizing and redacting passwords/hashes in screenshots taken during long-term PT/RT engagements (> 1 month), it mainly uses OCR (pytesseract) and PIL to process screenshots and redact passwords based on common password patterns (Regex) or a password list of choice and/or rename/group Screenshots based on which RT/PT stage executed commands correspond to.
 
 ## Features
 * Redact passwords/hashes (--redact switch) based on commond password patterns (regex) or a password list.
